@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # Definição do caminho base
-# caminho_base="/var/cache/zoneminder/events/"
-caminho_base="/home/monitora/Documentos/projeto_monitora/events/"
+caminho_base="/var/cache/zoneminder/events/"
+caminho_storage="/mnt/pub/testbackup/"
+# caminho_base="/home/monitora/Documentos/projeto_monitora/events_copy/"
 
 # Encontrar todas as pastas dentro do caminho base --> monitores
 pastas=$(find "$caminho_base" -mindepth 1 -maxdepth 1 -type d)
 
 for pasta in $pastas; do
+    echo "Transferindo os arquivos do monitor $(basename "$pasta")"
     # Encontrar todas as subpastas dentro da pasta atual --> dias
     subpastas=$(find "$pasta" -mindepth 1 -maxdepth 1 -type d)
 
@@ -32,13 +34,13 @@ for pasta in $pastas; do
 				time=$(stat -c %Y "$arquivo")
 
 				# Converter o horário de criação em formato legível
-				time_formatado=$(date -d @"$time" "+%Y%m%d_%H%M%S")
+				time_formatado=$(date -d @"$time" "+%Y%m%d_%H%M")
 
 				# Construir o novo nome do arquivo
-				novo_nome="${pasta}/$(basename "$pasta")_${time_formatado}"
+				novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}"
 
-				# Renomear o arquivo
-				mv "$arquivo" "$novo_nome"
+				# Renomear o arquivo sem sobrescrever o antigo
+				cp -R -u -p "$arquivo" "$novo_nome"
 
 				# Exibir informações sobre a renomeação
 				# echo "Arquivo renomeado: $nome_arquivo -> $(basename "$novo_nome")"
