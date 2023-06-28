@@ -2,7 +2,7 @@
 
 # Definição do caminho base
 # caminho_base="/var/cache/zoneminder/events/"
-caminho_base="/home/monitora/Documentos/projeto_monitora/events_copy/"
+caminho_base="/home/monitora/Documentos/projeto_monitora/events/"
 
 # Encontrar todas as pastas dentro do caminho base --> monitores
 pastas=$(find "$caminho_base" -mindepth 1 -maxdepth 1 -type d)
