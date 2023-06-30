@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Este arquivo deve ser rodado com autorização de root
+
+# Montar o diretório
+mount -t nfs 172.20.0.4:/volume1/Public /mnt/pub
+
 # Definição do caminho base
 caminho_base="/var/cache/zoneminder/events/"
 caminho_storage="/mnt/pub/testbackup/"
@@ -9,7 +14,7 @@ caminho_storage="/mnt/pub/testbackup/"
 pastas=$(find "$caminho_base" -mindepth 1 -maxdepth 1 -type d)
 
 for pasta in $pastas; do
-    echo "Transferindo os arquivos do monitor $(basename "$pasta")"
+    # echo "Transferindo os arquivos do monitor $(basename "$pasta")"
     # Encontrar todas as subpastas dentro da pasta atual --> dias
     subpastas=$(find "$pasta" -mindepth 1 -maxdepth 1 -type d)
 
@@ -34,10 +39,13 @@ for pasta in $pastas; do
 				time=$(stat -c %Y "$arquivo")
 
 				# Converter o horário de criação em formato legível
-				time_formatado=$(date -d @"$time" "+%Y%m%d_%H%M")
+				time_formatado=$(date -d @"$time" "+%Y%m%d_%H%M%S")
+				time_formatado="${time_formatado%??}" # Remove os segundos
 
 				# Construir o novo nome do arquivo
-				novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}"
+				# novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}"
+				# Preciso adicionar o formato do arquivo na hora de renomear
+				novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}.mp4"
 
 				# Renomear o arquivo sem sobrescrever o antigo
 				cp -R -u -p "$arquivo" "$novo_nome"
@@ -50,3 +58,6 @@ for pasta in $pastas; do
 	done
     done
 done
+
+# Desmontar o diretório
+umount /mnt/pub
