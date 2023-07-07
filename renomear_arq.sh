@@ -14,7 +14,6 @@ caminho_storage="/mnt/pub/testbackup/"
 pastas=$(find "$caminho_base" -mindepth 1 -maxdepth 1 -type d)
 
 for pasta in $pastas; do
-    # echo "Transferindo os arquivos do monitor $(basename "$pasta")"
     # Encontrar todas as subpastas dentro da pasta atual --> dias
     subpastas=$(find "$pasta" -mindepth 1 -maxdepth 1 -type d)
 
