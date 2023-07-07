@@ -18,7 +18,6 @@ for pasta in $pastas; do
     subpastas=$(find "$pasta" -mindepth 1 -maxdepth 1 -type d)
 
     for sub in $subpastas; do
-	#subpasta="${sub}/"
 	# Encontrar todas as subpastas dentro da subpasta atual --> eventos
 	subsubpastas=$(find "$sub/" -mindepth 1 -maxdepth 1 -type d)
 	
@@ -31,9 +30,6 @@ for pasta in $pastas; do
 		for arquivo in $arquivos; do
 			# Verificar se o arquivo é um vídeo no formato MP4
                 	if file --mime-type "$arquivo" | grep -q "video/mp4"; then
-				# Obter o nome do arquivo
-				# nome_arquivo=$(basename "$arquivo")
-
 				# Obter o horário de criação do arquivo
 				time=$(stat -c %Y "$arquivo")
 
@@ -42,11 +38,9 @@ for pasta in $pastas; do
 				time_formatado="${time_formatado%??}" # Remove os segundos
 
 				# Construir o novo nome do arquivo
-				# novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}"
-				# Preciso adicionar o formato do arquivo na hora de renomear
-				novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}.mp4"
+				novo_nome="${caminho_storage}$(basename "$pasta")_${time_formatado}"
 
-				# Renomear o arquivo sem sobrescrever o antigo
+				# Transfere o arquivo com novo nome, ignorando caso haja um arquivo com o mesmo nome no novo local
 				cp -R -u -p "$arquivo" "$novo_nome"
 
 				# Exibir informações sobre a renomeação
